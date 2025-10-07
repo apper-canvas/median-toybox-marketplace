@@ -76,7 +76,7 @@ const stockStatus = product.stock_quantity_c === 0 ? "Out of Stock" :
             className="aspect-square bg-gray-100 rounded-lg overflow-hidden"
           >
             <img
-              src={product.images[selectedImage]}
+src={product.images_c[selectedImage]}
               alt={product.name}
               className="w-full h-full object-cover"
             />
