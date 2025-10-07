@@ -9,7 +9,7 @@ const parseProduct = (product) => {
   if (!product) return null;
   return {
     ...product,
-    images_c: product.images_c ? JSON.parse(product.images_c) : [],
+    images_c: product.images_c ? [product.images_c] : [],
     dimensions_c: product.dimensions_c ? JSON.parse(product.dimensions_c) : { length: 0, width: 0, height: 0 }
   };
 };
