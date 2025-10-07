@@ -103,16 +103,13 @@ SALE
           </div>
         </div>
 
-        <Button
+<Button
           variant="primary"
           className="w-full"
           disabled={product.stock_quantity_c === 0}
           onClick={(e) => {
             e.stopPropagation();
             onAddToCart(product);
-          }}
-        >
-          <ApperIcon name="ShoppingCart" className="w-4 h-4 mr-2" />
           }}
         >
           <ApperIcon name="ShoppingCart" className="w-4 h-4 mr-2" />
