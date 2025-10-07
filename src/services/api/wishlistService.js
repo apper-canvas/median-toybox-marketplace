@@ -16,8 +16,13 @@ const wishlistService = {
 
       // Get user from Redux store
       const state = store.getState();
-      const userId = state.user?.user?.userId;
-
+// Access userId with multiple fallback paths to handle different Redux state structures
+      const userId = state.user?.user?.userId || state.user?.userId || state.user?.user?.id;
+      
+      // Add detailed logging if userId is not found to help diagnose Redux state structure
+      if (!userId) {
+        console.error('User ID not found in Redux state. User object structure:', JSON.stringify(state.user, null, 2));
+      }
       if (!userId) {
         console.error('User not authenticated');
         return [];
@@ -139,8 +144,13 @@ const wishlistService = {
 
       // Get user from Redux store
       const state = store.getState();
-      const userId = state.user?.user?.userId;
-
+// Access userId with multiple fallback paths to handle different Redux state structures
+      const userId = state.user?.user?.userId || state.user?.userId || state.user?.user?.id;
+      
+      // Add detailed logging if userId is not found to help diagnose Redux state structure
+      if (!userId) {
+        console.error('User ID not found in Redux state. User object structure:', JSON.stringify(state.user, null, 2));
+      }
       if (!userId) {
         toast.error('Please log in to add items to wishlist');
         return false;
