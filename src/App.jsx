@@ -19,6 +19,7 @@ import OrderDetailPage from "@/components/pages/OrderDetailPage";
 import CheckoutPage from "@/components/pages/CheckoutPage";
 import CartPage from "@/components/pages/CartPage";
 import ProductDetailPage from "@/components/pages/ProductDetailPage";
+import DealsPage from "@/components/pages/DealsPage";
 import Header from "@/components/organisms/Header";
 
 export const AuthContext = createContext(null);
@@ -190,7 +191,7 @@ const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
       <div className="min-h-screen bg-background">
         <Header cartCount={cartCount} wishlistCount={wishlistCount} />
         
-        <main className="max-w-7xl mx-auto px-4 py-8">
+<main className="max-w-7xl mx-auto px-4 py-8">
           <AnimatePresence mode="wait">
             <Routes>
               <Route path="/login" element={<Login />} />
@@ -207,6 +208,7 @@ const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
               <Route path="/orders" element={<OrdersPage />} />
               <Route path="/orders/:id" element={<OrderDetailPage />} />
               <Route path="/checkout" element={<CheckoutPage cart={cart} onClearCart={handleClearCart} />} />
+              <Route path="/deals" element={<DealsPage onAddToCart={handleAddToCart} onAddToWishlist={handleAddToWishlist} />} />
             </Routes>
           </AnimatePresence>
         </main>
