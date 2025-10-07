@@ -1,45 +1,26 @@
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
-import productService from "@/services/api/productService";
+import ApperIcon from "@/components/ApperIcon";
 import ProductCard from "@/components/molecules/ProductCard";
 import Empty from "@/components/ui/Empty";
 import Loading from "@/components/ui/Loading";
 import Button from "@/components/atoms/Button";
-import ApperIcon from "@/components/ApperIcon";
 
 const WishlistPage = ({ wishlist, onAddToCart, onRemoveFromWishlist }) => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        setLoading(true);
-        const allProducts = await productService.getAll();
-        const wishlistProducts = allProducts.filter(p => 
-          wishlist.includes(p.Id)
-        );
-        setProducts(wishlistProducts);
-      } catch (err) {
-        console.error("Failed to load wishlist products:", err);
-        toast.error("Failed to load wishlist");
-      } finally {
-        setLoading(false);
+  const [loading] = useState(false); // Loading handled by parent component
+const handleAddAllToCart = () => {
+    wishlist.forEach(item => {
+      if (item.product_id_c) {
+        onAddToCart(item.product_id_c);
       }
-    };
-
-    loadProducts();
-  }, [wishlist]);
-
-  const handleAddAllToCart = () => {
-    products.forEach(product => onAddToCart(product));
+    });
     toast.success("All items added to cart!");
   };
 
   if (loading) return <Loading type="products" />;
 
-  if (products.length === 0) {
+if (wishlist.length === 0) {
     return (
       <Empty
         title="Your wishlist is empty"
@@ -57,10 +38,10 @@ const WishlistPage = ({ wishlist, onAddToCart, onRemoveFromWishlist }) => {
             My Wishlist
           </h1>
           <p className="text-gray-600">
-            {products.length} {products.length === 1 ? "toy" : "toys"} saved
+{wishlist.length} {wishlist.length === 1 ? "toy" : "toys"} saved
           </p>
         </div>
-        {products.length > 0 && (
+{wishlist.length > 0 && (
           <Button
             variant="primary"
             onClick={handleAddAllToCart}
@@ -76,15 +57,15 @@ const WishlistPage = ({ wishlist, onAddToCart, onRemoveFromWishlist }) => {
         animate={{ opacity: 1 }}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
       >
-        {products.map((product, index) => (
+{wishlist.map((item, index) => (
           <motion.div
-            key={product.Id}
+            key={item.Id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
           >
             <ProductCard
-              product={product}
+              product={item.product_id_c}
               onAddToCart={onAddToCart}
               onAddToWishlist={onRemoveFromWishlist}
             />

@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
+import wishlistService from "@/services/api/wishlistService";
 import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { Provider, useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
@@ -28,9 +29,8 @@ function AppContent() {
 const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isInitialized, setIsInitialized] = useState(false);
-  const [cart, setCart] = useState([]);
-  const [wishlist, setWishlist] = useState([]);
-
+const [cart, setCart] = useState([]);
+  const [wishlist, setWishlist] = useState([]); // Now stores wishlist objects instead of product IDs
   useEffect(() => {
     const { ApperClient, ApperUI } = window.ApperSDK;
     
@@ -95,21 +95,21 @@ const navigate = useNavigate();
     });
   }, []);
 
-  useEffect(() => {
+useEffect(() => {
     const savedCart = localStorage.getItem("toybox-cart");
-    const savedWishlist = localStorage.getItem("toybox-wishlist");
     if (savedCart) setCart(JSON.parse(savedCart));
-    if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
+    
+    // Load wishlist from database
+    const loadWishlist = async () => {
+      const userWishlist = await wishlistService.getUserWishlist();
+      setWishlist(userWishlist);
+    };
+    loadWishlist();
   }, []);
 
   useEffect(() => {
     localStorage.setItem("toybox-cart", JSON.stringify(cart));
   }, [cart]);
-
-  useEffect(() => {
-    localStorage.setItem("toybox-wishlist", JSON.stringify(wishlist));
-  }, [wishlist]);
-
 const handleAddToCart = (product) => {
     const existingItem = cart.find(item => item.productId === product.Id);
     
@@ -155,13 +155,19 @@ const handleAddToCart = (product) => {
     }
   };
 
-  const handleAddToWishlist = (product) => {
-    if (wishlist.includes(product.Id)) {
-      setWishlist(wishlist.filter(id => id !== product.Id));
-      toast.info("Removed from wishlist");
-    } else {
-      setWishlist([...wishlist, product.Id]);
-      toast.success("Added to wishlist!");
+const handleAddToWishlist = async (product) => {
+    const result = await wishlistService.toggleWishlist(product.Id, wishlist);
+    
+    if (result.success) {
+      // Refresh wishlist from database
+      const updatedWishlist = await wishlistService.getUserWishlist();
+      setWishlist(updatedWishlist);
+      
+      if (result.action === 'added') {
+        toast.success("Added to wishlist!");
+      } else {
+        toast.info("Removed from wishlist");
+      }
     }
   };
 
@@ -184,7 +190,7 @@ const handleAddToCart = (product) => {
   }
 
 const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-  const wishlistCount = wishlist.length;
+const wishlistCount = wishlist.length; // Now counts wishlist objects
 
   return (
     <AuthContext.Provider value={authMethods}>
@@ -204,7 +210,7 @@ const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
               <Route path="/catalog" element={<CatalogPage onAddToCart={handleAddToCart} onAddToWishlist={handleAddToWishlist} />} />
               <Route path="/product/:id" element={<ProductDetailPage onAddToCart={handleAddToCart} onAddToWishlist={handleAddToWishlist} />} />
               <Route path="/cart" element={<CartPage cart={cart} onUpdateQuantity={handleUpdateQuantity} onRemove={handleRemoveFromCart} onClearCart={handleClearCart} />} />
-              <Route path="/wishlist" element={<WishlistPage wishlist={wishlist} onAddToCart={handleAddToCart} onRemoveFromWishlist={handleAddToWishlist} />} />
+<Route path="/wishlist" element={<WishlistPage wishlist={wishlist} onAddToCart={handleAddToCart} onRemoveFromWishlist={handleAddToWishlist} />} />
               <Route path="/orders" element={<OrdersPage />} />
               <Route path="/orders/:id" element={<OrderDetailPage />} />
               <Route path="/checkout" element={<CheckoutPage cart={cart} onClearCart={handleClearCart} />} />
