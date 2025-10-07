@@ -40,7 +40,7 @@ const loadProducts = async () => {
     loadProducts();
   }, [cart]);
 
-  const getProduct = (productId) => {
+const getProduct = (productId) => {
     return products.find(p => p.Id === productId);
   };
 
@@ -48,7 +48,7 @@ const loadProducts = async () => {
     return cart.reduce((total, item) => {
       const product = getProduct(item.productId);
       if (!product) return total;
-      const price = product.salePrice || product.price;
+      const price = product.sale_price_c || product.price_c;
       return total + (price * item.quantity);
     }, 0);
   };

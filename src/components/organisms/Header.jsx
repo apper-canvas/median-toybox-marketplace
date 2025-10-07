@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import ApperIcon from "@/components/ApperIcon";
 import SearchBar from "@/components/molecules/SearchBar";
 import Button from "@/components/atoms/Button";
+import { AuthContext } from "@/App";
 
 const Header = ({ cartCount = 0, wishlistCount = 0 }) => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { logout } = useContext(AuthContext);
   const [showCategories, setShowCategories] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
-
   const categories = [
     { name: "Action Figures & Playsets", icon: "Sword" },
     { name: "Dolls & Accessories", icon: "Baby" },
@@ -110,7 +111,13 @@ const handleSearch = (query) => {
                 <div className="hidden md:block flex-1 max-w-xl mx-8">
                     <SearchBar onSearch={handleSearch} />
                 </div>
-                <div className="flex items-center gap-2">
+<div className="flex items-center gap-2">
+                    <button
+                        onClick={logout}
+                        className="hidden lg:flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                        <ApperIcon name="LogOut" className="w-5 h-5" />
+                        Logout
+                    </button>
                     <button
                         onClick={() => navigate("/wishlist")}
                         className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
@@ -193,7 +200,7 @@ const handleSearch = (query) => {
                     }}
                     className="w-full justify-start text-gray-700">Orders
                                 </Button>
-                <div className="border-t border-gray-200 pt-4 mt-4">
+<div className="border-t border-gray-200 pt-4 mt-4">
                     <p className="text-sm text-gray-500 px-3">Categories</p>
                     {categories.map(category => <Button
                         key={category.name}
@@ -206,6 +213,18 @@ const handleSearch = (query) => {
                         <ApperIcon name={category.icon} className="w-5 h-5" />
                         {category.name}
                     </Button>)}
+                </div>
+                <div className="border-t border-gray-200 pt-4 mt-4">
+                    <Button
+                        variant="ghost"
+                        onClick={() => {
+                            logout();
+                            setMobileMenuOpen(false);
+                        }}
+                        className="w-full justify-start text-error gap-3">
+                        <ApperIcon name="LogOut" className="w-5 h-5" />
+                        Logout
+                    </Button>
                 </div>
             </nav>
         </motion.div>}

@@ -50,56 +50,56 @@ const CatalogPage = ({ onAddToCart, onAddToWishlist }) => {
   }, [searchParams]);
 
   const handleFilterChange = (filters) => {
-    let filtered = [...products];
+let filtered = [...products];
 
     if (filters.ageGroups.length > 0) {
       filtered = filtered.filter(product => {
         return filters.ageGroups.some(group => {
           const [min, max] = group.split("-").map(n => n === "+" ? 100 : parseInt(n));
-          return product.ageMin >= min && product.ageMax <= (max || 100);
+          return product.age_min_c >= min && product.age_max_c <= (max || 100);
         });
       });
     }
 
     if (filters.categories.length > 0) {
       filtered = filtered.filter(product =>
-        filters.categories.includes(product.category)
+        filters.categories.includes(product.category_c)
       );
     }
 
     if (filters.priceRange) {
       filtered = filtered.filter(product => {
-        const price = product.salePrice || product.price;
+        const price = product.sale_price_c || product.price_c;
         return price >= filters.priceRange.min && price <= filters.priceRange.max;
       });
     }
 
     if (filters.inStock) {
-      filtered = filtered.filter(product => product.stockQuantity > 0);
+      filtered = filtered.filter(product => product.stock_quantity_c > 0);
     }
 
     setFilteredProducts(filtered);
   };
 
-  const handleSort = (value) => {
+const handleSort = (value) => {
     setSortBy(value);
     let sorted = [...filteredProducts];
 
     switch (value) {
       case "price-low":
-        sorted.sort((a, b) => (a.salePrice || a.price) - (b.salePrice || b.price));
+        sorted.sort((a, b) => (a.sale_price_c || a.price_c) - (b.sale_price_c || b.price_c));
         break;
       case "price-high":
-        sorted.sort((a, b) => (b.salePrice || b.price) - (a.salePrice || a.price));
+        sorted.sort((a, b) => (b.sale_price_c || b.price_c) - (a.sale_price_c || a.price_c));
         break;
       case "rating":
-        sorted.sort((a, b) => b.rating - a.rating);
+        sorted.sort((a, b) => b.rating_c - a.rating_c);
         break;
       case "newest":
-        sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        sorted.sort((a, b) => new Date(b.created_at_c) - new Date(a.created_at_c));
         break;
       default:
-        sorted.sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
+        sorted.sort((a, b) => (b.is_featured_c ? 1 : 0) - (a.is_featured_c ? 1 : 0));
     }
 
     setFilteredProducts(sorted);

@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { motion } from 'framer-motion';
-import ApperIcon from '@/components/ApperIcon';
-import Button from '@/components/atoms/Button';
-import Loading from '@/components/ui/Loading';
-import Error from '@/components/ui/Error';
-import orderService from '@/services/api/orderService';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import ApperIcon from "@/components/ApperIcon";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import Button from "@/components/atoms/Button";
+import orderService from "@/services/api/orderService";
 
 export default function OrderDetailPage() {
   const { id } = useParams();
@@ -78,149 +78,137 @@ export default function OrderDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5 py-8">
-      <div className="max-w-6xl mx-auto px-4">
+    <div
+    className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5 py-8">
+    <div className="max-w-6xl mx-auto px-4">
         {/* Back Button */}
         <Button
-          variant="ghost"
-          onClick={() => navigate('/orders')}
-          className="mb-6 text-gray-600 hover:text-primary"
-        >
-          <ApperIcon name="ArrowLeft" size={18} className="mr-2" />
-          Back to Orders
-        </Button>
-
+            variant="ghost"
+            onClick={() => navigate("/orders")}
+            className="mb-6 text-gray-600 hover:text-primary">
+            <ApperIcon name="ArrowLeft" size={18} className="mr-2" />Back to Orders
+                    </Button>
         {/* Order Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-xl shadow-card p-6 mb-6 border border-gray-100"
-        >
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-display font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-2">
-                Order #{order.orderNumber}
-              </h1>
-              <p className="text-gray-600">
-                Placed on {new Date(order.orderDate).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </p>
-            </div>
-            <div className={`px-4 py-2 rounded-full border text-sm font-medium flex items-center gap-2 ${getStatusColor(order.status)}`}>
-              <ApperIcon name={getStatusIcon(order.status)} size={18} />
-              <span className="capitalize">{order.status}</span>
-            </div>
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Order Items */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="lg:col-span-2 bg-white rounded-xl shadow-card p-6 border border-gray-100"
-          >
-            <h2 className="text-xl font-display font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <ApperIcon name="Package" size={22} className="text-primary" />
-              Order Items ({order.items?.length || 0})
-            </h2>
-
-            <div className="space-y-4">
-              {order.items?.map((item, index) => (
+            initial={{
+                opacity: 0,
+                y: 20
+            }}
+            animate={{
+                opacity: 1,
+                y: 0
+            }}
+            className="bg-white rounded-xl shadow-card p-6 mb-6 border border-gray-100">
+            <div
+                className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1
+                        className="text-3xl font-display font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-2">Order #{order.Name}
+                    </h1>
+                    <p className="text-gray-600">Placed on {new Date(order.order_date_c).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric"
+                        })}
+                    </p>
+                </div>
                 <div
-                  key={index}
-                  className="flex gap-4 p-4 border border-gray-100 rounded-lg hover:border-primary/20 transition-colors"
-                >
-                  {/* Product Image */}
-                  <div className="w-20 h-20 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg flex-shrink-0 overflow-hidden">
-                    {item.image ? (
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <ApperIcon name="Package" size={32} className="text-gray-300" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Product Details */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-gray-900 mb-1 truncate">
-                      {item.name}
-                    </h3>
-                    <p className="text-sm text-gray-500 mb-2">
-                      Quantity: {item.quantity}
-                    </p>
-                    <p className="font-semibold text-primary">
-                      ${item.price?.toFixed(2)} each
-                    </p>
-                  </div>
-
-                  {/* Item Total */}
-                  <div className="text-right flex-shrink-0">
-                    <p className="text-sm text-gray-500 mb-1">Total</p>
-                    <p className="font-semibold text-lg text-gray-900">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </p>
-                  </div>
+                    className={`px-4 py-2 rounded-full border text-sm font-medium flex items-center gap-2 ${getStatusColor(order.status_c)}`}>
+                    <ApperIcon name={getStatusIcon(order.status_c)} size={18} />
+                    <span className="capitalize">{order.status_c}</span>
                 </div>
-              ))}
             </div>
-
-            {/* Order Total */}
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <div className="flex items-center justify-between">
-                <span className="text-lg font-display font-semibold text-gray-900">
-                  Order Total
-                </span>
-                <span className="text-2xl font-display font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  ${order.total?.toFixed(2)}
-                </span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Shipping Information */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-white rounded-xl shadow-card p-6 border border-gray-100 h-fit"
-          >
-            <h2 className="text-xl font-display font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <ApperIcon name="Truck" size={22} className="text-secondary" />
-              Shipping Information
-            </h2>
-
-            {order.shippingInfo ? (
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Recipient</p>
-                  <p className="font-medium text-gray-900">{order.shippingInfo.name}</p>
+        </motion.div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <motion.div
+                initial={{
+                    opacity: 0,
+                    x: -20
+                }}
+                animate={{
+                    opacity: 1,
+                    x: 0
+                }}
+                className="lg:col-span-2 space-y-6">
+                <div className="bg-white rounded-xl shadow-card p-6 border border-gray-100">
+                    <div className="flex items-center gap-2 mb-4">
+                        <ApperIcon name="Package" size={20} className="text-primary" />
+                        <h2 className="text-xl font-display font-bold text-gray-900">Order Items ({order.items_c?.length || 0})
+                                            </h2>
+                    </div>
+                    {order.items_c?.map((item, index) => <div
+                        key={index}
+                        className="flex gap-4 p-4 border border-gray-100 rounded-lg hover:border-primary/20 transition-colors">
+                        {/* Product Image */}
+                        <div
+                            className="w-20 h-20 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg flex-shrink-0 overflow-hidden">
+                            {item.image ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center">
+                                <ApperIcon name="Package" size={32} className="text-gray-300" />
+                            </div>}
+                        </div>
+                        {/* Product Details */}
+                        <div className="flex-1 min-w-0">
+                            <h3 className="font-medium text-gray-900 mb-1 truncate">
+                                {item.name}
+                            </h3>
+                            <p className="text-sm text-gray-500 mb-2">Quantity: {item.quantity}
+                            </p>
+                            <p className="font-semibold text-primary">${item.price?.toFixed(2)}each
+                                                    </p>
+                        </div>
+                        {/* Item Total */}
+                        <div className="text-right flex-shrink-0">
+                            <p className="text-sm text-gray-500 mb-1">Total</p>
+                            <p className="font-semibold text-lg text-gray-900">${(item.price * item.quantity).toFixed(2)}
+                            </p>
+                        </div>
+                    </div>)}
                 </div>
-
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Address</p>
-                  <p className="text-gray-900">{order.shippingInfo.address}</p>
-                  <p className="text-gray-900">
-                    {order.shippingInfo.city}, {order.shippingInfo.state} {order.shippingInfo.zip}
-                  </p>
-                  <p className="text-gray-900">{order.shippingInfo.country}</p>
+                <div className="bg-white rounded-xl shadow-card p-6 border border-gray-100">
+                    <div className="flex items-center gap-2 mb-4">
+                        <ApperIcon name="DollarSign" size={20} className="text-success" />
+                        <h2 className="text-xl font-display font-bold text-gray-900">Order Summary</h2>
+                    </div>
+                    <div className="flex items-center justify-between text-xl font-bold">
+                        <span className="text-gray-700">Total</span>
+                        <span
+                            className="text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">${order.total_c?.toFixed(2)}
+                        </span>
+                    </div>
                 </div>
-              </div>
-            ) : (
-              <p className="text-gray-500 text-sm">No shipping information available</p>
-            )}
-          </motion.div>
+            </motion.div>
+            <motion.div
+                initial={{
+                    opacity: 0,
+                    x: 20
+                }}
+                animate={{
+                    opacity: 1,
+                    x: 0
+                }}
+                className="space-y-6">
+                <div className="bg-white rounded-xl shadow-card p-6 border border-gray-100">
+                    <div className="flex items-center gap-2 mb-4">
+                        <ApperIcon name="MapPin" size={20} className="text-secondary" />
+                        <h2 className="text-xl font-display font-bold text-gray-900">Shipping Address</h2>
+                    </div>
+                    {order.shippingInfo ? <div className="space-y-3">
+                        <div>
+                            <p className="text-sm text-gray-500 mb-1">Recipient</p>
+                            <p className="font-medium text-gray-900">{order.shippingInfo.name}</p>
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-500 mb-1">Address</p>
+                            <p className="text-gray-900">{order.shippingInfo.address}</p>
+                            <p className="text-gray-900">
+                                {order.shippingInfo.city}, {order.shippingInfo.state} {order.shippingInfo.zip}
+                            </p>
+                            <p className="text-gray-900">{order.shippingInfo.country}</p>
+                        </div>
+                    </div> : <p className="text-gray-500 text-sm">No shipping information available</p>}
+                </div></motion.div>
         </div>
-      </div>
     </div>
+</div>
   );
 }

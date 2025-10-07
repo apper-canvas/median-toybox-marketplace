@@ -10,23 +10,23 @@ const CartItem = ({ item, product, onUpdateQuantity, onRemove }) => {
       exit={{ opacity: 0, x: -100 }}
       className="flex gap-4 p-4 bg-white rounded-lg border border-gray-200"
     >
-      <img
-        src={product.images[0]}
-        alt={product.name}
+<img
+        src={product.images_c?.[0]}
+        alt={product.name_c}
         className="w-20 h-20 object-cover rounded-md"
       />
       
       <div className="flex-1 min-w-0">
         <h4 className="font-display font-semibold text-gray-900 truncate">
-          {product.name}
+          {product.name_c}
         </h4>
-        <p className="text-sm text-gray-600">{product.brand}</p>
+        <p className="text-sm text-gray-600">{product.brand_c}</p>
         <p className="text-lg font-bold text-primary mt-1">
-          ${(product.salePrice || product.price).toFixed(2)}
+          ${(product.sale_price_c || product.price_c).toFixed(2)}
         </p>
       </div>
 
-      <div className="flex flex-col items-end justify-between">
+      <div className="flex flex-col items-end gap-3">
         <button
           onClick={() => onRemove(item.productId)}
           className="text-gray-400 hover:text-error transition-colors"

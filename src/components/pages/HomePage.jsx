@@ -43,8 +43,8 @@ const loadProducts = async () => {
     loadProducts();
   }, []);
 
-  const getCategoryCount = (category) => {
-    return allProducts.filter(p => p.category === category).length;
+const getCategoryCount = (category) => {
+    return allProducts.filter(p => p.category_c === category).length;
   };
 
   const categories = [

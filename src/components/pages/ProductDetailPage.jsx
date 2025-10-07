@@ -59,11 +59,11 @@ const loadProductData = async () => {
   if (error) return <Error message={error} onRetry={loadProductData} />;
   if (!product) return null;
 
-  const stockStatus = product.stockQuantity === 0 ? "Out of Stock" :
-                     product.stockQuantity <= 10 ? `Only ${product.stockQuantity} left` :
+const stockStatus = product.stock_quantity_c === 0 ? "Out of Stock" :
+                     product.stock_quantity_c <= 10 ? `Only ${product.stock_quantity_c} left` :
                      "In Stock";
-  const displayPrice = product.salePrice || product.price;
-  const hasDiscount = product.salePrice && product.salePrice < product.price;
+  const displayPrice = product.sale_price_c || product.price_c;
+  const hasDiscount = product.sale_price_c && product.sale_price_c < product.price_c;
 
   return (
     <div className="space-y-12">
@@ -100,16 +100,16 @@ const loadProductData = async () => {
         <div className="space-y-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <Badge variant="age">
-                {product.ageMin}-{product.ageMax} years
+<Badge variant="age">
+                {product.age_min_c}-{product.age_max_c} years
               </Badge>
               {hasDiscount && <Badge variant="error">SALE</Badge>}
-              {product.isFeatured && <Badge variant="primary">Featured</Badge>}
+              {product.is_featured_c && <Badge variant="primary">Featured</Badge>}
             </div>
             <h1 className="text-4xl font-display font-bold text-gray-900 mb-2">
-              {product.name}
+              {product.name_c}
             </h1>
-            <p className="text-lg text-gray-600">{product.brand}</p>
+            <p className="text-lg text-gray-600">{product.brand_c}</p>
           </div>
 
           <div className="flex items-center gap-4">
@@ -119,7 +119,7 @@ const loadProductData = async () => {
                   key={i}
                   name="Star"
                   className={`w-5 h-5 ${
-                    i < Math.floor(product.rating)
+i < Math.floor(product.rating_c)
                       ? "text-accent fill-accent"
                       : "text-gray-300"
                   }`}
@@ -127,30 +127,30 @@ const loadProductData = async () => {
               ))}
             </div>
             <span className="text-gray-600">
-              {product.rating} ({product.reviewCount} reviews)
+              {product.rating_c} ({product.review_count_c} reviews)
             </span>
           </div>
 
           <div className="flex items-baseline gap-3">
-            <span className="text-4xl font-display font-bold text-primary">
+<span className="text-4xl font-display font-bold text-primary">
               ${displayPrice.toFixed(2)}
             </span>
             {hasDiscount && (
               <span className="text-xl text-gray-500 line-through">
-                ${product.price.toFixed(2)}
+                ${product.price_c.toFixed(2)}
               </span>
             )}
           </div>
 
           <div className="flex items-center gap-2">
-            <div className={`w-3 h-3 rounded-full ${
-              product.stockQuantity === 0 ? "bg-error" :
-              product.stockQuantity <= 10 ? "bg-warning" :
+<div className={`w-3 h-3 rounded-full ${
+              product.stock_quantity_c === 0 ? "bg-error" :
+              product.stock_quantity_c <= 10 ? "bg-warning" :
               "bg-success"
             }`} />
             <span className={`font-medium ${
-              product.stockQuantity === 0 ? "text-error" :
-              product.stockQuantity <= 10 ? "text-warning" :
+              product.stock_quantity_c === 0 ? "text-error" :
+              product.stock_quantity_c <= 10 ? "text-warning" :
               "text-success"
             }`}>
               {stockStatus}
@@ -160,26 +160,26 @@ const loadProductData = async () => {
           <div className="border-t border-b border-gray-200 py-6 space-y-4">
             <div>
               <h3 className="font-display font-semibold text-gray-900 mb-2">Description</h3>
-              <p className="text-gray-600">{product.description}</p>
+<p className="text-gray-600">{product.description_c}</p>
             </div>
             
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-600">Category</p>
-                <p className="font-medium text-gray-900">{product.category}</p>
+                <p className="font-medium text-gray-900">{product.category_c}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Material</p>
-                <p className="font-medium text-gray-900">{product.material}</p>
+                <p className="font-medium text-gray-900">{product.material_c}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Weight</p>
-                <p className="font-medium text-gray-900">{product.weight} lbs</p>
+                <p className="font-medium text-gray-900">{product.weight_c} lbs</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Dimensions</p>
                 <p className="font-medium text-gray-900">
-                  {product.dimensions.length}" × {product.dimensions.width}" × {product.dimensions.height}"
+                  {product.dimensions_c?.length}" × {product.dimensions_c?.width}" × {product.dimensions_c?.height}"
                 </p>
               </div>
             </div>
@@ -197,8 +197,8 @@ const loadProductData = async () => {
                 </button>
                 <span className="w-12 text-center font-semibold">{quantity}</span>
                 <button
-                  onClick={() => setQuantity(Math.min(product.stockQuantity, quantity + 1))}
-                  disabled={quantity >= product.stockQuantity}
+onClick={() => setQuantity(Math.min(product.stock_quantity_c, quantity + 1))}
+                  disabled={quantity >= product.stock_quantity_c}
                   className="w-10 h-10 flex items-center justify-center hover:bg-gray-200 rounded-r-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ApperIcon name="Plus" className="w-4 h-4" />
@@ -208,10 +208,10 @@ const loadProductData = async () => {
 
             <div className="flex gap-3">
               <Button
-                variant="primary"
+variant="primary"
                 size="lg"
                 onClick={handleAddToCart}
-                disabled={product.stockQuantity === 0}
+                disabled={product.stock_quantity_c === 0}
                 className="flex-1"
               >
                 <ApperIcon name="ShoppingCart" className="w-5 h-5 mr-2" />
@@ -227,10 +227,10 @@ const loadProductData = async () => {
             </div>
 
             <Button
-              variant="secondary"
+variant="secondary"
               size="lg"
               onClick={handleBuyNow}
-              disabled={product.stockQuantity === 0}
+              disabled={product.stock_quantity_c === 0}
               className="w-full"
             >
               <ApperIcon name="Zap" className="w-5 h-5 mr-2" />
@@ -246,15 +246,15 @@ const loadProductData = async () => {
         </h2>
         
         <div className="space-y-6">
-          {reviews.map((review) => (
+{reviews.map((review) => (
             <div key={review.Id} className="bg-white rounded-lg shadow-card p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <p className="font-display font-semibold text-gray-900">
-                      {review.userName}
+                      {review.user_name_c}
                     </p>
-                    {review.isVerifiedPurchase && (
+                    {review.is_verified_purchase_c && (
                       <Badge variant="success">
                         <ApperIcon name="CheckCircle" className="w-3 h-3 mr-1" />
                         Verified Purchase
@@ -268,7 +268,7 @@ const loadProductData = async () => {
                           key={i}
                           name="Star"
                           className={`w-4 h-4 ${
-                            i < review.rating
+                            i < review.rating_c
                               ? "text-accent fill-accent"
                               : "text-gray-300"
                           }`}
@@ -276,20 +276,20 @@ const loadProductData = async () => {
                       ))}
                     </div>
                     <span className="text-sm text-gray-500">
-                      {format(new Date(review.createdAt), "MMM d, yyyy")}
+                      {format(new Date(review.created_at_c), "MMM d, yyyy")}
                     </span>
                   </div>
                 </div>
               </div>
               
-              {review.title && (
-                <h4 className="font-semibold text-gray-900 mb-2">{review.title}</h4>
+              {review.title_c && (
+                <h4 className="font-semibold text-gray-900 mb-2">{review.title_c}</h4>
               )}
-              <p className="text-gray-600 mb-4">{review.comment}</p>
+              <p className="text-gray-600 mb-4">{review.comment_c}</p>
               
               <button className="text-sm text-gray-500 hover:text-primary transition-colors">
                 <ApperIcon name="ThumbsUp" className="w-4 h-4 inline mr-1" />
-                Helpful ({review.helpfulCount})
+                Helpful ({review.helpful_count_c})
               </button>
             </div>
 ))}

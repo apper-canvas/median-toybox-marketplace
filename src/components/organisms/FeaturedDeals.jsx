@@ -1,8 +1,9 @@
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import ApperIcon from '@/components/ApperIcon';
-import Badge from '@/components/atoms/Badge';
-import Button from '@/components/atoms/Button';
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import React from "react";
+import ApperIcon from "@/components/ApperIcon";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
 
 function FeaturedDeals({ products, onAddToCart, onAddToWishlist }) {
   const navigate = useNavigate();
@@ -10,151 +11,135 @@ function FeaturedDeals({ products, onAddToCart, onAddToWishlist }) {
   const calculateDiscount = (price, salePrice) => {
     return Math.round(((price - salePrice) / price) * 100);
   };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5
-      }
-    }
-  };
+  if (!products || products.length === 0) {
+    return null;
+  }
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-    >
-      {products.map((product) => {
-        const discount = calculateDiscount(product.price, product.salePrice);
-        
-        return (
-          <motion.div
-            key={product.Id}
-            variants={itemVariants}
-            whileHover={{ y: -8, scale: 1.02 }}
-            className="relative bg-gradient-to-br from-primary/5 via-white to-secondary/5 rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden group"
-          >
-            {/* Discount Badge */}
-            <div className="absolute top-3 left-3 z-10">
-              <Badge variant="deal" className="text-sm px-3 py-1">
-                {discount}% OFF
-              </Badge>
-            </div>
+    <div className="py-8">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-3xl font-display font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Featured Deals
+          </h2>
+          <p className="text-gray-600 mt-1">Limited time offers on amazing toys!</p>
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => navigate("/deals")}
+          className="flex items-center gap-2"
+        >
+          View All Deals
+          <ApperIcon name="ArrowRight" className="w-4 h-4" />
+        </Button>
+      </div>
 
-            {/* Wishlist Button */}
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => onAddToWishlist(product)}
-              className="absolute top-3 right-3 z-10 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-white transition-colors"
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {products.slice(0, 3).map((product) => {
+          const discount = calculateDiscount(product.price_c, product.sale_price_c);
+
+          return (
+            <motion.div
+              key={product.Id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-xl shadow-card hover:shadow-card-hover overflow-hidden border border-gray-100 transition-all group relative"
             >
-              <ApperIcon name="Heart" size={20} className="text-primary" />
-            </motion.button>
-
-            {/* Product Image */}
-            <div 
-              className="relative h-56 bg-gradient-to-br from-primary/10 to-secondary/10 overflow-hidden cursor-pointer"
-              onClick={() => navigate(`/product/${product.Id}`)}
-            >
-              <img
-                src={product.images[0]}
-                alt={product.name}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-
-            {/* Product Info */}
-            <div className="p-5">
-              {/* Brand & Stock */}
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold text-secondary uppercase tracking-wide">
-                  {product.brand}
-                </span>
-                {product.stockQuantity < 10 && (
-                  <Badge variant="warning" className="text-xs">
-                    Only {product.stockQuantity} left!
+              <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
+                <Badge variant="error" className="bg-gradient-to-r from-error to-pink-500 text-white shadow-lg">
+                  {discount}% OFF
+                </Badge>
+                {product.stock_quantity_c < 10 && (
+                  <Badge variant="warning">
+                    Only {product.stock_quantity_c} left!
                   </Badge>
                 )}
               </div>
 
-              {/* Product Name */}
-              <h3 
-                className="text-lg font-display font-bold text-gray-900 mb-3 line-clamp-2 cursor-pointer hover:text-primary transition-colors"
+              <button
+                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-lg"
+                onClick={() => onAddToWishlist(product)}
+              >
+                <ApperIcon name="Heart" className="w-5 h-5 text-gray-700 hover:text-error" />
+              </button>
+
+              <div
+                className="relative h-64 bg-gradient-to-br from-primary/10 to-secondary/10 overflow-hidden cursor-pointer"
                 onClick={() => navigate(`/product/${product.Id}`)}
               >
-                {product.name}
-              </h3>
-
-              {/* Price */}
-              <div className="flex items-baseline gap-3 mb-4">
-                <span className="text-2xl font-bold text-error">
-                  ${product.salePrice.toFixed(2)}
-                </span>
-                <span className="text-lg text-gray-400 line-through">
-                  ${product.price.toFixed(2)}
-                </span>
+                <img
+                  src={product.images_c?.[0]}
+                  alt={product.name_c}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
               </div>
 
-              {/* Rating */}
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <ApperIcon
-                      key={i}
-                      name="Star"
-                      size={16}
-                      className={i < Math.floor(product.rating) ? "text-accent fill-accent" : "text-gray-300"}
-                    />
-                  ))}
+              <div className="p-5">
+                <div className="flex items-start justify-between mb-2">
+                  <div>
+                    <span className="text-xs text-gray-500 uppercase tracking-wide">
+                      {product.brand_c}
+                    </span>
+                    {product.stock_quantity_c < 10 && (
+                      <Badge variant="warning" className="text-xs">
+                        Only {product.stock_quantity_c} left!
+                      </Badge>
+                    )}
+                  </div>
                 </div>
-                <span className="text-sm text-gray-600">
-                  {product.rating} ({product.reviewCount})
-                </span>
-              </div>
 
-              {/* Add to Cart Button */}
-              <Button
-                onClick={() => onAddToCart(product)}
-                disabled={product.stockQuantity === 0}
-                className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300"
-              >
-                {product.stockQuantity === 0 ? (
-                  'Out of Stock'
-                ) : (
-                  <span className="flex items-center justify-center gap-2">
-                    <ApperIcon name="ShoppingCart" size={18} />
-                    Add to Cart
+                <h3
+                  className="text-lg font-display font-bold text-gray-900 mb-3 line-clamp-2 cursor-pointer hover:text-primary transition-colors"
+                  onClick={() => navigate(`/product/${product.Id}`)}
+                >
+                  {product.name_c}
+                </h3>
+
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-2xl font-display font-bold text-primary">
+                    ${product.sale_price_c.toFixed(2)}
                   </span>
-                )}
-              </Button>
+                  <span className="text-lg text-gray-400 line-through">
+                    ${product.price_c.toFixed(2)}
+                  </span>
+                </div>
 
-              {/* Age Range */}
-              <div className="mt-3 flex items-center justify-center gap-2 text-xs text-gray-500">
-                <ApperIcon name="Baby" size={14} />
-                <span>Ages {product.ageMin}-{product.ageMax}</span>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <ApperIcon
+                        key={i}
+                        name="Star"
+                        size={16}
+                        className={i < Math.floor(product.rating_c) ? "text-accent fill-accent" : "text-gray-300"}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm text-gray-600">
+                    {product.rating_c} ({product.review_count_c})
+                  </span>
+                </div>
+
+                <Button
+                  variant="primary"
+                  className="w-full"
+                  onClick={() => onAddToCart(product)}
+                >
+                  <ApperIcon name="ShoppingCart" className="w-4 h-4 mr-2" />
+                  Add to Cart
+                </Button>
+
+                <div className="flex items-center gap-2 mt-3 text-xs text-gray-500">
+                  <ApperIcon name="Baby" size={14} />
+                  <span>Ages {product.age_min_c}-{product.age_max_c}</span>
+                </div>
               </div>
-            </div>
-          </motion.div>
-        );
-      })}
-    </motion.div>
-  );
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+);
 }
 
 export default FeaturedDeals;

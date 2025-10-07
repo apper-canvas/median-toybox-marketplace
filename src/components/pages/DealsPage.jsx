@@ -11,12 +11,12 @@ const DealsPage = ({ onAddToCart, onAddToWishlist }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const loadDeals = async () => {
+const loadDeals = async () => {
     try {
       setLoading(true);
       setError(null);
       const allProducts = await productService.getAll();
-      const dealsProducts = allProducts.filter(p => p.salePrice && p.salePrice < p.price);
+      const dealsProducts = allProducts.filter(p => p.sale_price_c && p.sale_price_c < p.price_c);
       setProducts(dealsProducts);
     } catch (err) {
       setError(err.message);
@@ -25,7 +25,6 @@ const DealsPage = ({ onAddToCart, onAddToWishlist }) => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     loadDeals();
   }, []);

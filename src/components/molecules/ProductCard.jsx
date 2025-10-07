@@ -8,74 +8,71 @@ const ProductCard = ({ product, onAddToCart, onAddToWishlist }) => {
   const navigate = useNavigate();
 
   const getStockStatus = () => {
-    if (product.stockQuantity === 0) return { text: "Out of Stock", color: "error" };
-    if (product.stockQuantity <= 10) return { text: `Only ${product.stockQuantity} left`, color: "warning" };
+if (product.stock_quantity_c === 0) return { text: "Out of Stock", color: "error" };
+    if (product.stock_quantity_c <= 10) return { text: `Only ${product.stock_quantity_c} left`, color: "warning" };
     return { text: "In Stock", color: "success" };
   };
 
   const stockStatus = getStockStatus();
-  const displayPrice = product.salePrice || product.price;
-  const hasDiscount = product.salePrice && product.salePrice < product.price;
+  const displayPrice = product.sale_price_c || product.price_c;
+  const hasDiscount = product.sale_price_c && product.sale_price_c < product.price_c;
 
   return (
     <motion.div
-      whileHover={{ scale: 1.02, y: -4 }}
-      transition={{ duration: 0.2 }}
-      className="bg-white rounded-lg shadow-card hover:shadow-card-hover overflow-hidden cursor-pointer group"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="bg-white rounded-xl shadow-card hover:shadow-card-hover overflow-hidden border border-gray-100 transition-all cursor-pointer group"
       onClick={() => navigate(`/product/${product.Id}`)}
     >
-      <div className="relative aspect-square overflow-hidden bg-gray-100">
-        <img 
-          src={product.images[0]} 
-          alt={product.name}
+      <div className="relative h-56 bg-gradient-to-br from-primary/10 to-secondary/10 overflow-hidden">
+        <img
+          src={product.images_c?.[0]} 
+          alt={product.name_c}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
         />
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
+        <div className="absolute top-3 left-3 flex flex-wrap gap-2">
           <Badge variant="age">
-            {product.ageMin}-{product.ageMax} years
+            {product.age_min_c}-{product.age_max_c} years
           </Badge>
           {hasDiscount && (
             <Badge variant="error" className="bg-gradient-to-r from-error to-pink-500 text-white">
 SALE
             </Badge>
           )}
-          {product.isFeatured && (
+          {product.is_featured_c && (
             <Badge variant="primary" className="bg-gradient-to-r from-accent to-yellow-400 text-gray-900">
               Featured
             </Badge>
           )}
         </div>
-        <div className="absolute top-3 right-3">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={(e) => {
-              e.stopPropagation();
-              onAddToWishlist(product);
-            }}
-            className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-primary hover:text-white transition-colors"
-          >
-            <ApperIcon name="Heart" className="w-5 h-5" />
-          </motion.button>
-        </div>
+        <button
+          className="absolute top-3 right-3 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddToWishlist(product);
+          }}
+        >
+          <ApperIcon name="Heart" className="w-5 h-5 text-gray-700 hover:text-error" />
+        </button>
       </div>
 
-      <div className="p-4 space-y-3">
-        <div>
-          <h3 className="font-display font-semibold text-lg text-gray-900 line-clamp-2 group-hover:text-primary transition-colors">
-            {product.name}
+      <div className="p-4">
+        <div className="mb-3">
+          <h3 className="text-lg font-display font-semibold text-gray-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors">
+            {product.name_c}
           </h3>
-          <p className="text-sm text-gray-600 mt-1">{product.brand}</p>
+          <p className="text-sm text-gray-600 mt-1">{product.brand_c}</p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="flex items-center">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-1">
             {[...Array(5)].map((_, i) => (
               <ApperIcon
                 key={i}
                 name="Star"
-                className={`w-4 h-4 ${
-                  i < Math.floor(product.rating)
+                size={14}
+                className={`${
+                  i < Math.floor(product.rating_c)
                     ? "text-accent fill-accent"
                     : "text-gray-300"
                 }`}
@@ -83,18 +80,18 @@ SALE
             ))}
           </div>
           <span className="text-sm text-gray-600">
-            {product.rating} ({product.reviewCount})
+            {product.rating_c} ({product.review_count_c})
           </span>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-2xl font-display font-bold text-primary">
               ${displayPrice.toFixed(2)}
             </span>
             {hasDiscount && (
               <span className="text-sm text-gray-500 line-through">
-                ${product.price.toFixed(2)}
+                ${product.price_c.toFixed(2)}
               </span>
             )}
           </div>
@@ -109,10 +106,13 @@ SALE
         <Button
           variant="primary"
           className="w-full"
-          disabled={product.stockQuantity === 0}
+          disabled={product.stock_quantity_c === 0}
           onClick={(e) => {
             e.stopPropagation();
             onAddToCart(product);
+          }}
+        >
+          <ApperIcon name="ShoppingCart" className="w-4 h-4 mr-2" />
           }}
         >
           <ApperIcon name="ShoppingCart" className="w-4 h-4 mr-2" />
