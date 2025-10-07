@@ -81,9 +81,9 @@ src={product.images_c[selectedImage]}
               className="w-full h-full object-cover"
             />
           </motion.div>
-          
-          <div className="grid grid-cols-5 gap-2">
-            {product.images.map((image, index) => (
+<div className="flex gap-2 overflow-x-auto mt-4">
+            {/* Thumbnail images */}
+            {(product.images_c || []).map((image, index) => (
               <button
                 key={index}
                 onClick={() => setSelectedImage(index)}
