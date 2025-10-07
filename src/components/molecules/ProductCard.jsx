@@ -26,7 +26,7 @@ if (product.stock_quantity_c === 0) return { text: "Out of Stock", color: "error
     >
       <div className="relative h-56 bg-gradient-to-br from-primary/10 to-secondary/10 overflow-hidden">
         <img
-          src={product.images_c?.[0]} 
+          src={product.images_c} 
           alt={product.name_c}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
         />
