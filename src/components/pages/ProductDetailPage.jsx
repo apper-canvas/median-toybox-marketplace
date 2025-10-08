@@ -13,7 +13,7 @@ import Button from "@/components/atoms/Button";
 import productService from "@/services/api/productService";
 import reviewService from "@/services/api/reviewService";
 
-const ProductDetailPage = ({ onAddToCart, onAddToWishlist, wishlist }) => {
+const ProductDetailPage = ({ onAddToCart, onAddToWishlist }) => {
   const navigate = useNavigate();
   const userState = useSelector((state) => state.user);
   const { id } = useParams();

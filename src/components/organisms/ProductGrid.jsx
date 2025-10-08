@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import ProductCard from "@/components/molecules/ProductCard";
 import Empty from "@/components/ui/Empty";
 
-const ProductGrid = ({ products, onAddToCart, onAddToWishlist, wishlist }) => {
+const ProductGrid = ({ products, onAddToCart, onAddToWishlist }) => {
   if (products.length === 0) {
     return (
       <Empty
@@ -26,11 +26,10 @@ const ProductGrid = ({ products, onAddToCart, onAddToWishlist, wishlist }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.05 }}
         >
-<ProductCard
+          <ProductCard
             product={product}
             onAddToCart={onAddToCart}
             onAddToWishlist={onAddToWishlist}
-            wishlist={wishlist}
           />
         </motion.div>
       ))}

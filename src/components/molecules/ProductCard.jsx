@@ -1,11 +1,10 @@
-import { motion } from 'framer-motion'
-import { useNavigate } from 'react-router-dom'
-import ApperIcon from '@/components/ApperIcon'
-import Badge from '@/components/atoms/Badge'
-import Button from '@/components/atoms/Button'
-import wishlistService from '@/services/api/wishlistService'
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import ApperIcon from "@/components/ApperIcon";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
 
-const ProductCard = ({ product, onAddToCart, onAddToWishlist, wishlist }) => {
+const ProductCard = ({ product, onAddToCart, onAddToWishlist }) => {
   const navigate = useNavigate();
 
   const getStockStatus = () => {
@@ -46,21 +45,14 @@ SALE
             </Badge>
           )}
         </div>
-<button
+        <button
           className="absolute top-3 right-3 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors"
           onClick={(e) => {
             e.stopPropagation();
             onAddToWishlist(product);
           }}
         >
-          <ApperIcon 
-            name="Heart" 
-            className={`w-5 h-5 ${
-              wishlist && wishlistService.isInWishlist(product.Id, wishlist)
-                ? 'fill-error text-error'
-                : 'text-gray-700 hover:text-error'
-            }`}
-          />
+          <ApperIcon name="Heart" className="w-5 h-5 text-gray-700 hover:text-error" />
         </button>
       </div>
 
