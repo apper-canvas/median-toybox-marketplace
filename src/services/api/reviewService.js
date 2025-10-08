@@ -6,7 +6,7 @@ const apperClient = new ApperClient({
 });
 
 const reviewService = {
-  async getByProductId(productId) {
+async getByProductId(productId) {
     try {
       const params = {
         fields: [
@@ -28,13 +28,22 @@ const reviewService = {
       const response = await apperClient.fetchRecords('review_c', params);
       
       if (!response.success) {
-        console.error(response.message);
+        console.error(`Failed to fetch reviews for product ${productId}:`, response.message);
         return [];
       }
       
-      return response.data || [];
+      // Handle case where data is undefined or null
+      if (!response.data) {
+        console.info(`No review data returned for product ${productId}. This may indicate RLS policies are restricting access.`);
+        return [];
+      }
+      
+      // Log review count for debugging
+      console.info(`Fetched ${response.data.length} reviews for product ${productId}`);
+      
+      return response.data;
     } catch (error) {
-      console.error("Error fetching reviews:", error.message);
+      console.error(`Error fetching reviews for product ${productId}:`, error.message);
       return [];
     }
   },
