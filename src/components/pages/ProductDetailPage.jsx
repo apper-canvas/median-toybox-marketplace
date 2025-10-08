@@ -3,28 +3,32 @@ import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
-import ProductCarousel from "@/components/atoms/ProductCarousel";
+import { useSelector } from "react-redux";
 import ApperIcon from "@/components/ApperIcon";
 import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
+import ProductCarousel from "@/components/atoms/ProductCarousel";
 import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
 import productService from "@/services/api/productService";
 import reviewService from "@/services/api/reviewService";
+
 const ProductDetailPage = ({ onAddToCart, onAddToWishlist }) => {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const userState = useSelector((state) => state.user);
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [similarProducts, setSimilarProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewForm, setReviewForm] = useState({ rating: 0, title: "", comment: "" });
   const [submittingReview, setSubmittingReview] = useState(false);
-const loadProductData = async () => {
+
+  const loadProductData = async () => {
     try {
       setLoading(true);
       setError(null);
@@ -43,7 +47,8 @@ const loadProductData = async () => {
       setLoading(false);
     }
   };
-useEffect(() => {
+
+  useEffect(() => {
     loadProductData();
   }, [id]);
 
@@ -67,18 +72,11 @@ useEffect(() => {
 
     try {
       setSubmittingReview(true);
-      const { ApperClient } = window.ApperSDK;
-      const apperClient = new ApperClient({
-        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-      });
-
-      // Get authenticated user info
-      const userResponse = await apperClient.getUser();
-      const userName = userResponse?.firstName && userResponse?.lastName 
-        ? `${userResponse.firstName} ${userResponse.lastName}`
+// Get authenticated user info from Redux
+      const userName = userState.user?.firstName && userState.user?.lastName 
+        ? `${userState.user.firstName} ${userState.user.lastName}`
         : "Anonymous";
-      const userId = userResponse?.userId || "guest";
+      const userId = userState.user?.userId || "guest";
 
       await reviewService.create({
         productId: parseInt(id),
