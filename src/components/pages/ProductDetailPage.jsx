@@ -18,9 +18,12 @@ const ProductDetailPage = ({ onAddToCart, onAddToWishlist }) => {
   const [reviews, setReviews] = useState([]);
   const [similarProducts, setSimilarProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewForm, setReviewForm] = useState({ rating: 0, title: "", comment: "" });
+  const [submittingReview, setSubmittingReview] = useState(false);
 const loadProductData = async () => {
     try {
       setLoading(true);
@@ -40,10 +43,64 @@ const loadProductData = async () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
+useEffect(() => {
     loadProductData();
   }, [id]);
+
+  const handleRatingChange = (rating) => {
+    setReviewForm(prev => ({ ...prev, rating }));
+  };
+
+  const handleReviewChange = (field, value) => {
+    setReviewForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmitReview = async () => {
+    if (reviewForm.rating === 0) {
+      toast.error("Please select a rating");
+      return;
+    }
+    if (reviewForm.comment.trim().length < 10) {
+      toast.error("Review comment must be at least 10 characters");
+      return;
+    }
+
+    try {
+      setSubmittingReview(true);
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      // Get authenticated user info
+      const userResponse = await apperClient.getUser();
+      const userName = userResponse?.firstName && userResponse?.lastName 
+        ? `${userResponse.firstName} ${userResponse.lastName}`
+        : "Anonymous";
+      const userId = userResponse?.userId || "guest";
+
+      await reviewService.create({
+        productId: parseInt(id),
+        userId: userId,
+        userName: userName,
+        rating: reviewForm.rating,
+        title: reviewForm.title,
+        comment: reviewForm.comment,
+        isVerifiedPurchase: false
+      });
+
+      toast.success("Review submitted successfully!");
+      setReviewForm({ rating: 0, title: "", comment: "" });
+      setShowReviewForm(false);
+      await loadProductData();
+    } catch (error) {
+      console.error("Error submitting review:", error.message);
+      toast.error(error.message || "Failed to submit review");
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       onAddToCart(product);
@@ -239,60 +296,175 @@ variant="secondary"
           </div>
         </div>
       </div>
-
-      <div className="border-t border-gray-200 pt-12">
-        <h2 className="text-3xl font-display font-bold text-gray-900 mb-8">
-          Customer Reviews ({reviews.length})
-        </h2>
+<div className="border-t border-gray-200 pt-12">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-3xl font-display font-bold text-gray-900">
+            Customer Reviews ({reviews.length})
+          </h2>
+          <Button
+            variant="primary"
+            onClick={() => setShowReviewForm(!showReviewForm)}
+          >
+            <ApperIcon name="Edit" className="w-4 h-4 mr-2" />
+            Write a Review
+          </Button>
+        </div>
         
-        <div className="space-y-6">
-{reviews.map((review) => (
-            <div key={review.Id} className="bg-white rounded-lg shadow-card p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <p className="font-display font-semibold text-gray-900">
-                      {review.user_name_c}
-                    </p>
-                    {review.is_verified_purchase_c && (
-                      <Badge variant="success">
-                        <ApperIcon name="CheckCircle" className="w-3 h-3 mr-1" />
-                        Verified Purchase
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <ApperIcon
-                          key={i}
-                          name="Star"
-                          className={`w-4 h-4 ${
-                            i < review.rating_c
-                              ? "text-accent fill-accent"
-                              : "text-gray-300"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-sm text-gray-500">
-                      {format(new Date(review.created_at_c), "MMM d, yyyy")}
-                    </span>
-                  </div>
+{showReviewForm && (
+          <div className="bg-white rounded-lg shadow-card p-6 mb-8">
+            <h3 className="text-xl font-display font-semibold text-gray-900 mb-4">
+              Write Your Review
+            </h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Rating <span className="text-error">*</span>
+                </label>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => handleRatingChange(star)}
+                      disabled={submittingReview}
+                      className="focus:outline-none disabled:opacity-50"
+                    >
+                      <ApperIcon
+                        name="Star"
+                        className={`w-8 h-8 transition-colors ${
+                          star <= reviewForm.rating
+                            ? "text-accent fill-accent"
+                            : "text-gray-300 hover:text-accent"
+                        }`}
+                      />
+                    </button>
+                  ))}
                 </div>
               </div>
-              
-              {review.title_c && (
-                <h4 className="font-semibold text-gray-900 mb-2">{review.title_c}</h4>
-              )}
-              <p className="text-gray-600 mb-4">{review.comment_c}</p>
-              
-              <button className="text-sm text-gray-500 hover:text-primary transition-colors">
-                <ApperIcon name="ThumbsUp" className="w-4 h-4 inline mr-1" />
-                Helpful ({review.helpful_count_c})
-              </button>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Review Title (Optional)
+                </label>
+                <input
+                  type="text"
+                  value={reviewForm.title}
+                  onChange={(e) => handleReviewChange("title", e.target.value)}
+                  disabled={submittingReview}
+                  placeholder="Summarize your experience"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Your Review <span className="text-error">*</span>
+                </label>
+                <textarea
+                  value={reviewForm.comment}
+                  onChange={(e) => handleReviewChange("comment", e.target.value)}
+                  disabled={submittingReview}
+                  placeholder="Share your thoughts about this product (minimum 10 characters)"
+                  rows={4}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed resize-none"
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowReviewForm(false);
+                    setReviewForm({ rating: 0, title: "", comment: "" });
+                  }}
+                  disabled={submittingReview}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={handleSubmitReview}
+                  disabled={submittingReview || reviewForm.rating === 0 || reviewForm.comment.trim().length < 10}
+                >
+                  {submittingReview ? (
+                    <>
+                      <ApperIcon name="Loader2" className="w-4 h-4 mr-2 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      <ApperIcon name="Send" className="w-4 h-4 mr-2" />
+                      Submit Review
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
-))}
+          </div>
+        )}
+
+        <div className="space-y-6">
+          {reviews.length === 0 && !showReviewForm ? (
+            <div className="bg-gray-50 rounded-lg p-8 text-center">
+              <ApperIcon name="MessageSquare" className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+              <p className="text-gray-600 mb-4">No reviews yet. Be the first to review this product!</p>
+              <Button
+                variant="primary"
+                onClick={() => setShowReviewForm(true)}
+              >
+                Write a Review
+              </Button>
+            </div>
+          ) : (
+            reviews.map((review) => (
+              <div key={review.Id} className="bg-white rounded-lg shadow-card p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <p className="font-display font-semibold text-gray-900">
+                        {review.user_name_c}
+                      </p>
+                      {review.is_verified_purchase_c && (
+                        <Badge variant="success">
+                          <ApperIcon name="CheckCircle" className="w-3 h-3 mr-1" />
+                          Verified Purchase
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <ApperIcon
+                            key={i}
+                            name="Star"
+                            className={`w-4 h-4 ${
+                              i < review.rating_c
+                                ? "text-accent fill-accent"
+                                : "text-gray-300"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-sm text-gray-500">
+                        {format(new Date(review.created_at_c), "MMM d, yyyy")}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                {review.title_c && (
+                  <h4 className="font-semibold text-gray-900 mb-2">{review.title_c}</h4>
+                )}
+                <p className="text-gray-600 mb-4">{review.comment_c}</p>
+                
+                <button className="text-sm text-gray-500 hover:text-primary transition-colors">
+                  <ApperIcon name="ThumbsUp" className="w-4 h-4 inline mr-1" />
+                  Helpful ({review.helpful_count_c})
+                </button>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
