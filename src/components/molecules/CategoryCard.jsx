@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
 
 const categoryIcons = {
-  "Action Figures & Playsets": "Sword",
+  "Action Figures & Playsets": "Sword_test",
   "Dolls & Accessories": "Baby",
   "Board Games & Puzzles": "Puzzle",
   "Educational & STEM Toys": "GraduationCap",
