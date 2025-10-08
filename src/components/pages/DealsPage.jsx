@@ -6,7 +6,7 @@ import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 
-const DealsPage = ({ onAddToCart, onAddToWishlist }) => {
+const DealsPage = ({ onAddToCart, onAddToWishlist, wishlist }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,10 +50,11 @@ const loadDeals = async () => {
           icon="Tag"
         />
       ) : (
-        <ProductGrid
+<ProductGrid
           products={products}
           onAddToCart={onAddToCart}
           onAddToWishlist={onAddToWishlist}
+          wishlist={wishlist}
         />
       )}
     </div>

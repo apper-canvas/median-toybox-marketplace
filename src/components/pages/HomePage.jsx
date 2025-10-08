@@ -11,7 +11,7 @@ import FeaturedDeals from "@/components/organisms/FeaturedDeals";
 import Button from "@/components/atoms/Button";
 import productService from "@/services/api/productService";
 
-const HomePage = ({ onAddToCart, onAddToWishlist }) => {
+const HomePage = ({ onAddToCart, onAddToWishlist, wishlist }) => {
   const navigate = useNavigate();
 const [featuredProducts, setFeaturedProducts] = useState([]);
   const [featuredDeals, setFeaturedDeals] = useState([]);
@@ -74,9 +74,10 @@ const getCategoryCount = (category) => {
             </h2>
           </div>
           <FeaturedDeals 
-            products={featuredDeals}
+products={featuredDeals}
             onAddToCart={onAddToCart}
             onAddToWishlist={onAddToWishlist}
+            wishlist={wishlist}
           />
         </section>
       )}
@@ -117,9 +118,10 @@ const getCategoryCount = (category) => {
           </Button>
         </div>
         <ProductGrid
-          products={featuredProducts}
+products={featuredProducts}
           onAddToCart={onAddToCart}
           onAddToWishlist={onAddToWishlist}
+          wishlist={wishlist}
         />
       </section>
 

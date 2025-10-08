@@ -4,8 +4,9 @@ import React from "react";
 import ApperIcon from "@/components/ApperIcon";
 import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
+import wishlistService from "@/services/api/wishlistService";
 
-function FeaturedDeals({ products, onAddToCart, onAddToWishlist }) {
+function FeaturedDeals({ products, onAddToCart, onAddToWishlist, wishlist }) {
   const navigate = useNavigate();
 
   const calculateDiscount = (price, salePrice) => {
@@ -56,11 +57,18 @@ function FeaturedDeals({ products, onAddToCart, onAddToWishlist }) {
                 )}
               </div>
 
-              <button
+<button
                 className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-lg"
                 onClick={() => onAddToWishlist(product)}
               >
-                <ApperIcon name="Heart" className="w-5 h-5 text-gray-700 hover:text-error" />
+                <ApperIcon 
+                  name="Heart" 
+                  className={`w-5 h-5 ${
+                    wishlist && wishlistService.isInWishlist(product.Id, wishlist)
+                      ? 'fill-error text-error'
+                      : 'text-gray-700 hover:text-error'
+                  }`}
+                />
               </button>
 
               <div

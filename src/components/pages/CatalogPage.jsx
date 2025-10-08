@@ -9,7 +9,7 @@ import Error from "@/components/ui/Error";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 
-const CatalogPage = ({ onAddToCart, onAddToWishlist }) => {
+const CatalogPage = ({ onAddToCart, onAddToWishlist, wishlist }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -150,10 +150,11 @@ const handleSort = (value) => {
         </div>
 
         <div className="lg:col-span-3">
-          <ProductGrid
+<ProductGrid
             products={filteredProducts}
             onAddToCart={onAddToCart}
             onAddToWishlist={onAddToWishlist}
+            wishlist={wishlist}
           />
         </div>
       </div>
