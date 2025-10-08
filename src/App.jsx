@@ -115,7 +115,7 @@ const handleAddToCart = (product) => {
     
     if (existingItem) {
       if (existingItem.quantity >= product.stock_quantity_c) {
-        toast.warning("Cannot add more items than available in stock");
+        toast.warning("Cannot add more items than available in stock.");
         return;
       }
       setCart(cart.map(item =>
