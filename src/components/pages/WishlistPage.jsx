@@ -8,9 +8,8 @@ import Loading from "@/components/ui/Loading";
 import Button from "@/components/atoms/Button";
 
 const WishlistPage = ({ wishlist, onAddToCart, onRemoveFromWishlist }) => {
-  const [loading] = useState(false);
-
-  const handleAddAllToCart = () => {
+  const [loading] = useState(false); // Loading handled by parent component
+const handleAddAllToCart = () => {
     wishlist.forEach(item => {
       if (item.product_id_c) {
         onAddToCart(item.product_id_c);
