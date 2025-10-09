@@ -206,11 +206,11 @@ const wishlistCount = wishlist.length; // Now counts wishlist objects
               <Route path="/error" element={<ErrorPage />} />
               <Route path="/prompt-password/:appId/:emailAddress/:provider" element={<PromptPassword />} />
               <Route path="/reset-password/:appId/:fields" element={<ResetPassword />} />
-              <Route path="/" element={<HomePage onAddToCart={handleAddToCart} onAddToWishlist={handleAddToWishlist} />} />
+<Route path="/" element={<HomePage onAddToCart={handleAddToCart} onAddToWishlist={handleAddToWishlist} />} />
               <Route path="/catalog" element={<CatalogPage onAddToCart={handleAddToCart} onAddToWishlist={handleAddToWishlist} />} />
               <Route path="/product/:id" element={<ProductDetailPage onAddToCart={handleAddToCart} onAddToWishlist={handleAddToWishlist} />} />
               <Route path="/cart" element={<CartPage cart={cart} onUpdateQuantity={handleUpdateQuantity} onRemove={handleRemoveFromCart} onClearCart={handleClearCart} />} />
-<Route path="/wishlist" element={<WishlistPage wishlist={wishlist} onAddToCart={handleAddToCart} onRemoveFromWishlist={handleAddToWishlist} />} />
+              <Route path="/wishlist" element={<WishlistPage wishlist={wishlist} onAddToCart={handleAddToCart} onRemoveFromWishlist={handleAddToWishlist} />} />
               <Route path="/orders" element={<OrdersPage />} />
               <Route path="/orders/:id" element={<OrderDetailPage />} />
               <Route path="/checkout" element={<CheckoutPage cart={cart} onClearCart={handleClearCart} />} />
